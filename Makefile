@@ -24,7 +24,7 @@
 .PHONY: all clean
 
 # Define required raylib variables
-PROJECT_NAME       ?= merger
+PROJECT_NAME       ?= game
 RAYLIB_VERSION     ?= 6.1-dev
 RAYLIB_PATH        ?= ..\..
 
