@@ -9,13 +9,8 @@ BallContainer *CreateContainer(const int maxBalls) {
     BallContainer *bc = malloc(sizeof(BallContainer) + maxBalls * sizeof(Ball));
     if (!bc) return NULL;
 
-    bc->firstFreeBall = -1;
-    bc->ballsCount = 0;
-    bc->ballsCapacity = 0;
-
-    for (int i = 0; i < maxBalls; i++) {
-        ResetBall(bc, i);
-    }
+    bc->maxBalls = maxBalls;
+    ResetContainer(bc);
 
     return bc;
 }
@@ -132,6 +127,17 @@ void ResetBall(BallContainer *bc, const int ind) {
     ball->velocity.y = 0;
     ball->nextFree = -1;
     ball->hitWall = false;
+}
+
+void ResetContainer(BallContainer *bc) {
+    TraceLog(LOG_DEBUG, "Reseting container");
+    bc->firstFreeBall = -1;
+    bc->ballsCount = 0;
+    bc->ballsCapacity = 0;
+
+    for (int i = 0; i < bc->maxBalls; i++) {
+        ResetBall(bc, i);
+    }
 }
 
 float CalcBallSize(const int tier) {

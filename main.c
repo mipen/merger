@@ -24,6 +24,7 @@ static void UpdateDrawFrame(void); // Update and draw one frame
 int main() {
     // Initialization
     //--------------------------------------------------------------------------------------
+    SetTraceLogLevel(LOG_DEBUG);
     const int screenWidth = 400;
     const int screenHeight = 800;
 
@@ -79,6 +80,9 @@ static void UpdateDrawFrame(void) {
             ballContainer->balls[ind].position.x = (float) mouseX;
             ballContainer->balls[ind].position.y = (float) HELD_BALL_Y_POS;
             ballContainer->balls[ind].velocity.y = BALL_INITIAL_SPEED;
+        }
+        if (IsKeyPressed(KEY_R)) {
+            ResetContainer(ballContainer);
         }
     }
 

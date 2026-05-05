@@ -24,6 +24,7 @@ typedef struct {
 
 typedef struct {
     int firstFreeBall;
+    int maxBalls;
     int ballsCapacity;
     int ballsCount;
     Ball balls[];

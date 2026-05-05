@@ -17,6 +17,8 @@ int GetNextTier(int tier);
 
 void ResetBall(BallContainer *bc, int ind);
 
+void ResetContainer(BallContainer *bc);
+
 float CalcBallSize(int tier);
 
 #endif
