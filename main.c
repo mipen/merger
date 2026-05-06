@@ -4,6 +4,7 @@
 #include "constants.h"
 #include "types.h"
 #include "balls.h"
+#include "globals.h"
 
 
 //----------------------------------------------------------------------------------
@@ -11,6 +12,7 @@
 //----------------------------------------------------------------------------------
 BallTier heldBallTier = T1;
 BallContainer *ballContainer;
+bool gameOver = false;
 
 //----------------------------------------------------------------------------------
 // Module Functions Declaration
@@ -55,33 +57,42 @@ int main() {
 
 // Update and draw game frame
 static void UpdateDrawFrame(void) {
-    // Update
-    //----------------------------------------------------------------------------------
-    //Move balls
-    UpdateBalls(ballContainer);
-    //----------------------------------------------------------------------------------
+    // ---- Update ----
+    const float mouseX = (float) GetMouseX();
+    const float heldBallSize = CalcBallSize(heldBallTier);
+    const float heldBallPosX = fmaxf(fminf(mouseX, GetRightWallBound() - heldBallSize), GetLeftWallBound() + heldBallSize);
 
-    // Draw
-    //----------------------------------------------------------------------------------
-    BeginDrawing();
+    for (int i = 0; i < ballContainer->ballsCapacity; i++) {
+        const Ball *b = &ballContainer->balls[i];
+        if (b->tier != None && b->position.y > (float) BOTTOM_BOUND) {
+            gameOver = true;
+            break;
+        }
+    }
 
-    ClearBackground(RAYWHITE);
+    if (!gameOver) {
+        // Move balls
+        UpdateBalls(ballContainer);
 
-    if (heldBallTier != None) {
-        const float mouseX = (float) GetMouseX();
-        const float heldBallSize = CalcBallSize(heldBallTier);
-        const float xPos = fmaxf(fminf(mouseX, GetRightWallBound() - heldBallSize), GetLeftWallBound() + heldBallSize);
-
-        DrawCircle((int) roundf(xPos), HELD_BALL_Y_POS, heldBallSize, BALL_COLORS[heldBallTier - 1]);
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            SpawnBall(xPos);
+            SpawnBall(heldBallPosX);
         }
         if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-            SpawnBall(xPos);
+            SpawnBall(heldBallPosX);
         }
         if (IsKeyPressed(KEY_R)) {
             ResetContainer(ballContainer);
         }
+    }
+
+    // ---- Draw ----
+    BeginDrawing();
+
+    ClearBackground(RAYWHITE);
+
+    // Draw the held ball
+    if (!gameOver) {
+        DrawCircle((int) roundf(heldBallPosX), BOTTOM_BOUND, heldBallSize, BALL_COLORS[heldBallTier - 1]);
     }
 
     for (int i = 0; i < ballContainer->ballsCapacity; i++) {
@@ -91,8 +102,14 @@ static void UpdateDrawFrame(void) {
                        BALL_COLORS[b->tier - 1]);
         }
     }
+
     DrawFPS(10, 10);
     DrawText(TextFormat("%2i balls", ballContainer->ballsCount), 10, 25, 20, BLACK);
+    DrawText(TextFormat("Score: %2i", SCORE), GetScreenWidth() - 150, 10, 20, BLACK);
+
+    if (gameOver) {
+        DrawText("Game over!", 100, 380, 40,BLACK);
+    }
 
     EndDrawing();
     //----------------------------------------------------------------------------------
@@ -104,15 +121,18 @@ static void SpawnBall(const float xPos) {
     b->tier = heldBallTier;
     b->radius = CalcBallSize(heldBallTier);
     b->position.x = xPos;
-    b->position.y = (float) HELD_BALL_Y_POS;
+    b->position.y = (float) BOTTOM_BOUND;
     b->velocity.y = BALL_INITIAL_SPEED;
+
+    SCORE += heldBallTier;
 
     heldBallTier = GetNextBall();
 }
 
 static BallTier GetNextBall() {
-    const int rVal = GetRandomValue(0, 9);
+    const int rVal = GetRandomValue(0, 10);
     if (rVal <= 4) return T1;
     if (rVal <= 7) return T2;
-    return T3;
+    if (rVal <= 9) return T3;
+    return T4;
 }

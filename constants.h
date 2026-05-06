@@ -19,7 +19,7 @@ extern const float TOP_WALL_RESTITUTION;
 extern const float FRICTION;
 
 //Game
-extern const int HELD_BALL_Y_POS;
+extern const int BOTTOM_BOUND;
 
 
 extern const Color BALL_COLORS[9];

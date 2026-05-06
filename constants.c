@@ -17,7 +17,7 @@ const float TOP_WALL_RESTITUTION = 0.1f;
 const float FRICTION = 0.99f;
 
 //Game
-const int HELD_BALL_Y_POS = 700;
+const int BOTTOM_BOUND = 700;
 
 const Color BALL_COLORS[9] = {
     BLUE, YELLOW, GREEN, ORANGE, PURPLE, RED, DARKBLUE, BEIGE, GOLD

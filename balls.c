@@ -4,6 +4,7 @@
 #include "balls.h"
 
 #include "constants.h"
+#include "globals.h"
 
 static void resolveWallCollisions(Ball *b, float leftWall, float rightWall, float topWall, float bottomWall, Vector2 *newVel);
 
@@ -29,6 +30,12 @@ void UpdateBalls(BallContainer *bc) {
     for (int i = 0; i < bc->ballsCapacity; i++) {
         Ball *bi = &bc->balls[i];
         if (bi->tier == None) continue;
+
+        if (bi->tier == MAX_BALL_TIER) {
+            RemoveBall(bc, i);
+            SCORE += 600;
+            continue;
+        }
 
         //Friction slow down
         Vector2 newVel = Vector2Scale(bi->velocity, expf(-FRICTION * dt));
@@ -71,6 +78,7 @@ static void resolveBallCollisions(BallContainer *bc, Ball *bi, Vector2 *newVel, 
                 bj->radius = CalcBallSize(newTier);
                 bj->position = Vector2Scale(Vector2Add(bi->position, bj->position), 0.5f);
                 bj->velocity = Vector2Scale(Vector2Add(*newVel, bj->velocity), 0.5f);
+                SCORE += (long) pow(2, newTier);
                 RemoveBall(bc, i);
                 *removed = true;
                 break;
