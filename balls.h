@@ -19,7 +19,7 @@ void ResetBall(BallContainer *bc, int ind);
 
 void ResetContainer(BallContainer *bc);
 
-float CalcBallSize(int tier);
+float CalcBallRadius(int tier);
 
 float CalcBallMass(int tier);
 

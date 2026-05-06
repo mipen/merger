@@ -75,7 +75,7 @@ static void resolveBallCollisions(BallContainer *bc, Ball *bi, Vector2 *newVel, 
             if (bi->tier == bj->tier && bi->tier < MAX_BALL_TIER) {
                 const BallTier newTier = GetNextTier(bj->tier);
                 bj->tier = newTier;
-                bj->radius = CalcBallSize(newTier);
+                bj->radius = CalcBallRadius(newTier);
                 bj->position = Vector2Scale(Vector2Add(bi->position, bj->position), 0.5f);
                 bj->velocity = Vector2Scale(Vector2Add(*newVel, bj->velocity), 0.5f);
                 SCORE += (long) pow(2, newTier);
@@ -204,7 +204,7 @@ void ResetContainer(BallContainer *bc) {
     }
 }
 
-float CalcBallSize(const int tier) {
+float CalcBallRadius(const int tier) {
     return (float) (10 + pow(1.6f, tier));
 }
 

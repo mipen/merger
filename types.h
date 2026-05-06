@@ -34,4 +34,10 @@ typedef struct {
     Ball balls[];
 } BallContainer;
 
+typedef struct {
+    Rectangle source;
+    float destWidth;
+    float destHeight;
+} Sprite;
+
 #endif
