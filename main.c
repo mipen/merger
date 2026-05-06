@@ -18,7 +18,7 @@ BallContainer *ballContainer;
 static void UpdateDrawFrame(void); // Update and draw one frame
 static BallTier GetNextBall(void);
 
-static void SpawnBall(int mouseX);
+static void SpawnBall(float xPos);
 
 
 //----------------------------------------------------------------------------------
@@ -68,13 +68,16 @@ static void UpdateDrawFrame(void) {
     ClearBackground(RAYWHITE);
 
     if (heldBallTier != None) {
-        const int mouseX = GetMouseX();
-        DrawCircle(mouseX, HELD_BALL_Y_POS, CalcBallSize(heldBallTier), BALL_COLORS[heldBallTier - 1]);
+        const float mouseX = (float) GetMouseX();
+        const float heldBallSize = CalcBallSize(heldBallTier);
+        const float xPos = fmaxf(fminf(mouseX, GetRightWallBound() - heldBallSize), GetLeftWallBound() + heldBallSize);
+
+        DrawCircle((int) roundf(xPos), HELD_BALL_Y_POS, heldBallSize, BALL_COLORS[heldBallTier - 1]);
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            SpawnBall(mouseX);
+            SpawnBall(xPos);
         }
         if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-            SpawnBall(mouseX);
+            SpawnBall(xPos);
         }
         if (IsKeyPressed(KEY_R)) {
             ResetContainer(ballContainer);
@@ -95,12 +98,12 @@ static void UpdateDrawFrame(void) {
     //----------------------------------------------------------------------------------
 }
 
-static void SpawnBall(const int mouseX) {
+static void SpawnBall(const float xPos) {
     const int ind = AddBall(ballContainer);
     Ball *b = &ballContainer->balls[ind];
     b->tier = heldBallTier;
-    b->size = CalcBallSize(heldBallTier);
-    b->position.x = (float) mouseX;
+    b->radius = CalcBallSize(heldBallTier);
+    b->position.x = xPos;
     b->position.y = (float) HELD_BALL_Y_POS;
     b->velocity.y = BALL_INITIAL_SPEED;
 

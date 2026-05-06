@@ -12,7 +12,8 @@ const BallTier MAX_BALL_TIER = T9;
 
 //Physics
 const float BALL_RESTITUTION = 0.45f;
-const float WALL_RESTITUTION = 0.5f;
+const float SIDE_WALL_RESTITUTION = 0.5f;
+const float TOP_WALL_RESTITUTION = 0.1f;
 const float FRICTION = 0.99f;
 
 //Game

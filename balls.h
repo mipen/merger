@@ -23,4 +23,10 @@ float CalcBallSize(int tier);
 
 float CalcBallMass(int tier);
 
+float GetLeftWallBound();
+
+float GetRightWallBound();
+
+float GetTopWallBound();
+
 #endif

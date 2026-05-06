@@ -22,9 +22,8 @@ typedef struct {
     Vector2 position;
     Vector2 velocity;
     BallTier tier;
-    float size;
+    float radius;
     short nextFree;
-    bool hitWall;
 } Ball;
 
 typedef struct {
