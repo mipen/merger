@@ -21,4 +21,6 @@ void ResetContainer(BallContainer *bc);
 
 float CalcBallSize(int tier);
 
+float CalcBallMass(int tier);
+
 #endif

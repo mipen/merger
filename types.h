@@ -6,27 +6,32 @@
 #include <stdbool.h>
 
 typedef enum {
-    Zero = 0,
-    One = 1,
-    Two = 2,
-    Three = 3,
-    Four = 4,
-    Five = 5
+    None = 0,
+    T1 = 1,
+    T2 = 2,
+    T3 = 3,
+    T4 = 4,
+    T5 = 5,
+    T6 = 6,
+    T7 = 7,
+    T8 = 8,
+    T9 = 9,
 } BallTier;
 
 typedef struct {
     Vector2 position;
     Vector2 velocity;
     BallTier tier;
-    int nextFree;
+    float size;
+    short nextFree;
     bool hitWall;
 } Ball;
 
 typedef struct {
-    int firstFreeBall;
     int maxBalls;
     int ballsCapacity;
     int ballsCount;
+    short firstFreeBall;
     Ball balls[];
 } BallContainer;
 

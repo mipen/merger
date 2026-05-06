@@ -9,13 +9,16 @@
 //----------------------------------------------------------------------------------
 // Global Variables Definition (local to this module)
 //----------------------------------------------------------------------------------
-BallTier heldBallTier = One;
+BallTier heldBallTier = T1;
 BallContainer *ballContainer;
 
 //----------------------------------------------------------------------------------
 // Module Functions Declaration
 //----------------------------------------------------------------------------------
 static void UpdateDrawFrame(void); // Update and draw one frame
+static BallTier GetNextBall(void);
+
+static void SpawnBall(int mouseX);
 
 
 //----------------------------------------------------------------------------------
@@ -64,22 +67,14 @@ static void UpdateDrawFrame(void) {
 
     ClearBackground(RAYWHITE);
 
-    if (heldBallTier != Zero) {
+    if (heldBallTier != None) {
         const int mouseX = GetMouseX();
-        DrawCircle(mouseX, HELD_BALL_Y_POS, CalcBallSize(heldBallTier), BALL_COLORS[heldBallTier]);
+        DrawCircle(mouseX, HELD_BALL_Y_POS, CalcBallSize(heldBallTier), BALL_COLORS[heldBallTier - 1]);
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            const int ind = AddBall(ballContainer);
-            ballContainer->balls[ind].tier = heldBallTier;
-            ballContainer->balls[ind].position.x = (float) mouseX;
-            ballContainer->balls[ind].position.y = (float) HELD_BALL_Y_POS;
-            ballContainer->balls[ind].velocity.y = BALL_INITIAL_SPEED;
+            SpawnBall(mouseX);
         }
         if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-            const int ind = AddBall(ballContainer);
-            ballContainer->balls[ind].tier = heldBallTier;
-            ballContainer->balls[ind].position.x = (float) mouseX;
-            ballContainer->balls[ind].position.y = (float) HELD_BALL_Y_POS;
-            ballContainer->balls[ind].velocity.y = BALL_INITIAL_SPEED;
+            SpawnBall(mouseX);
         }
         if (IsKeyPressed(KEY_R)) {
             ResetContainer(ballContainer);
@@ -88,9 +83,9 @@ static void UpdateDrawFrame(void) {
 
     for (int i = 0; i < ballContainer->ballsCapacity; i++) {
         const Ball *b = &ballContainer->balls[i];
-        if (b->tier != Zero) {
+        if (b->tier != None) {
             DrawCircle((int) roundf(b->position.x), (int) roundf(b->position.y), CalcBallSize(b->tier),
-                       BALL_COLORS[b->tier]);
+                       BALL_COLORS[b->tier - 1]);
         }
     }
     DrawFPS(10, 10);
@@ -100,4 +95,21 @@ static void UpdateDrawFrame(void) {
     //----------------------------------------------------------------------------------
 }
 
+static void SpawnBall(const int mouseX) {
+    const int ind = AddBall(ballContainer);
+    Ball *b = &ballContainer->balls[ind];
+    b->tier = heldBallTier;
+    b->size = CalcBallSize(heldBallTier);
+    b->position.x = (float) mouseX;
+    b->position.y = (float) HELD_BALL_Y_POS;
+    b->velocity.y = BALL_INITIAL_SPEED;
 
+    heldBallTier = GetNextBall();
+}
+
+static BallTier GetNextBall() {
+    const int rVal = GetRandomValue(0, 9);
+    if (rVal <= 4) return T1;
+    if (rVal <= 7) return T2;
+    return T3;
+}
