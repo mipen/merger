@@ -3,8 +3,6 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include <stdbool.h>
-
 typedef enum {
     None = 0,
     T1 = 1,
@@ -36,8 +34,14 @@ typedef struct {
 
 typedef struct {
     Rectangle source;
+    Vector2 offset;
     float destWidth;
     float destHeight;
 } Sprite;
+
+typedef struct {
+    Ball *ball;
+    int sortY;
+} DrawCommand;
 
 #endif

@@ -6,7 +6,7 @@
 #include "types.h"
 
 //Ball Stuff
-#define NUM_BALL_TIERS 9
+#define NUM_BALL_TIERS 7
 extern const int MAX_BALLS;
 extern const float MIN_SPEED;
 extern const float MIN_SPEED_SQ;
@@ -22,8 +22,8 @@ extern const float FRICTION;
 //Game
 extern const int BOTTOM_BOUND;
 
-
 extern const Color BALL_COLORS[NUM_BALL_TIERS];
+extern const float BALL_RADII[NUM_BALL_TIERS];
 extern const Sprite BALL_SPRITES[NUM_BALL_TIERS];
 
 #endif

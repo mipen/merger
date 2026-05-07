@@ -3,6 +3,7 @@
 #include <raymath.h>
 #include "balls.h"
 
+#include "screen.h"
 #include "constants.h"
 #include "globals.h"
 
@@ -25,7 +26,7 @@ void UpdateBalls(BallContainer *bc) {
     const float leftWallBound = GetLeftWallBound();
     const float rightWallBound = GetRightWallBound();
     const float topWallBound = GetTopWallBound();
-    const float bottomWallBound = (float) GetScreenHeight();
+    const float bottomWallBound = GetBottomWallBound();
 
     for (int i = 0; i < bc->ballsCapacity; i++) {
         Ball *bi = &bc->balls[i];
@@ -75,7 +76,7 @@ static void resolveBallCollisions(BallContainer *bc, Ball *bi, Vector2 *newVel, 
             if (bi->tier == bj->tier && bi->tier < MAX_BALL_TIER) {
                 const BallTier newTier = GetNextTier(bj->tier);
                 bj->tier = newTier;
-                bj->radius = CalcBallRadius(newTier);
+                bj->radius = GetBallRadius(newTier);
                 bj->position = Vector2Scale(Vector2Add(bi->position, bj->position), 0.5f);
                 bj->velocity = Vector2Scale(Vector2Add(*newVel, bj->velocity), 0.5f);
                 SCORE += (long) pow(2, newTier);
@@ -107,6 +108,7 @@ static void resolveBallCollisions(BallContainer *bc, Ball *bi, Vector2 *newVel, 
             const Vector2 correction = Vector2Scale(collisionNormal, correctionMag * percent);
 
             bj->position = Vector2Add(bj->position, Vector2Scale(correction, mj_inv));
+            bi->position = Vector2Subtract(bi->position, Vector2Scale(correction, mi_inv));
 
             const Vector2 relativeVelocity = Vector2Subtract(bj->velocity, *newVel);
             const float velAlongNormal = Vector2DotProduct(relativeVelocity, collisionNormal);
@@ -204,12 +206,13 @@ void ResetContainer(BallContainer *bc) {
     }
 }
 
-float CalcBallRadius(const int tier) {
-    return (float) (10 + pow(1.6f, tier));
+float GetBallRadius(const int tier) {
+    return BALL_RADII[tier - 1];
+    // return (float) (10 + pow(1.6f, tier));
 }
 
 float CalcBallMass(const int tier) {
-    return 10.f + (float) (tier * tier * tier);
+    return 10.f + (float) (tier * tier * tier * tier);
 }
 
 float GetLeftWallBound() {
@@ -217,9 +220,13 @@ float GetLeftWallBound() {
 }
 
 float GetRightWallBound() {
-    return (float) GetScreenWidth() - 20.f;
+    return (float) BASE_WIDTH - 20.f;
 }
 
 float GetTopWallBound() {
     return 100.f;
+}
+
+float GetBottomWallBound() {
+    return (float) BASE_HEIGHT - 20.f;
 }

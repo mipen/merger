@@ -19,7 +19,7 @@ void ResetBall(BallContainer *bc, int ind);
 
 void ResetContainer(BallContainer *bc);
 
-float CalcBallRadius(int tier);
+float GetBallRadius(int tier);
 
 float CalcBallMass(int tier);
 
@@ -28,5 +28,7 @@ float GetLeftWallBound();
 float GetRightWallBound();
 
 float GetTopWallBound();
+
+float GetBottomWallBound();
 
 #endif
