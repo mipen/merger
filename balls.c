@@ -222,15 +222,16 @@ float GetBallRadius(const int tier) {
 }
 
 float CalcBallMass(const int tier) {
-    return 1000.f + (float) pow(tier, 6);
+    // return 1000.f + (float) pow(tier, 6);
+    return (float) (15 * tier);
 }
 
 float GetLeftWallBound() {
-    return 20.f;
+    return 45.f;
 }
 
 float GetRightWallBound() {
-    return (float) BASE_WIDTH - 20.f;
+    return (float) BASE_WIDTH - 45.f;
 }
 
 float GetTopWallBound() {

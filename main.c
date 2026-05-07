@@ -175,7 +175,7 @@ static void DrawFrame(void) {
     DrawText(scoreText, 10, 10, fontSize, BLACK);
     const char *btext = TextFormat("%2i balls", ballContainer->ballsCount);
     const int textWidth = MeasureText(btext, fontSize);
-    DrawText(btext, (int) GetRightWallBound() - textWidth, 10, fontSize, BLACK);
+    DrawText(btext, (int) BASE_WIDTH - textWidth - 10, 10, fontSize, BLACK);
 
     if (gameOver) {
         const char *text = "Game over!";
@@ -217,8 +217,8 @@ static void SpawnBall(const float xPos) {
 
 static BallTier GetNextBall() {
     const int rVal = GetRandomValue(0, 99);
-    if (rVal <= 60) return T1;
-    if (rVal <= 94) return T2;
+    if (rVal <= 70) return T1;
+    if (rVal <= 96) return T2;
     return T3;
 }
 

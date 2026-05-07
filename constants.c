@@ -7,18 +7,18 @@
 const int MAX_BALLS = 1000;
 const float MIN_SPEED = 2.8f;
 const float MIN_SPEED_SQ = MIN_SPEED * MIN_SPEED;
-const float BALL_INITIAL_SPEED = -600.f;
+const float BALL_INITIAL_SPEED = -300.f;
 const BallTier MAX_BALL_TIER = T9;
 
 //Physics
 const float BALL_RESTITUTION = 0.25f;
 const float RESTING_THRESHOLD = 5.f;
 const float SIDE_WALL_RESTITUTION = 0.5f;
-const float TOP_WALL_RESTITUTION = 0.05f;
+const float TOP_WALL_RESTITUTION = 0.25f;
 const float FRICTION = 0.97f;
 
 //Game
-const int BOTTOM_BOUND = 100;
+const int BOTTOM_BOUND = 250;
 
 const Color BALL_COLORS[NUM_BALL_TIERS] = {
     BLUE, YELLOW, GREEN, ORANGE, PURPLE, RED, DARKBLUE,
