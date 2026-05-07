@@ -179,14 +179,26 @@ static void DrawFrame(void) {
 
     if (gameOver) {
         const char *text = "Game over!";
-        const int width = MeasureText(text, 40);
-        const int posX = (BASE_WIDTH / 2) - (width / 2);
-        const int posY = (BASE_HEIGHT / 2) - 20;
-        const int margin = 10;
-        const Rectangle goRect = (Rectangle){(float) (posX - margin), (float) (posY - margin), (float) (width + margin * 2), (float) (40 + margin * 2)};
+        int fs = 40;
+        int width = MeasureText(text, fs);
+        int posX = BASE_WIDTH / 2 - width / 2;
+        int posY = BASE_HEIGHT / 2 - fs / 2;
+        int margin = 10;
+        Rectangle goRect = (Rectangle){(float) (posX - margin), (float) (posY - margin), (float) (width + margin * 2), (float) (fs + margin * 2)};
         DrawRectangleRounded(goRect, 0.2f, 100, GRAY);
         DrawRectangleRoundedLinesEx(goRect, 0.2f, 100, 2.f, BLACK);
-        DrawText(text, posX, posY, 40, BLACK);
+        DrawText(text, posX, posY, fs, BLACK);
+
+        text = "Press 'r' to restart";
+        fs = 20;
+        width = MeasureText(text, fs);
+        posX = BASE_WIDTH / 2 - width / 2;
+        posY = BASE_HEIGHT / 2 + 60;
+        margin = 10;
+        goRect = (Rectangle){(float) (posX - margin), (float) (posY - margin), (float) (width + margin * 2), (float) (fs + margin * 2)};
+        DrawRectangleRounded(goRect, 0.2f, 100, GRAY);
+        DrawRectangleRoundedLinesEx(goRect, 0.2f, 100, 2.f, BLACK);
+        DrawText(text, posX, posY, fs, BLACK);
     }
 }
 
