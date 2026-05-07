@@ -61,7 +61,7 @@ void UpdateBalls(BallContainer *bc) {
 }
 
 static void resolveBallCollisions(BallContainer *bc, Ball *bi, Vector2 *newVel, const int i, bool *removed) {
-    const float biRadius = bi->radius;
+    const float biRadius = GetBallRadius(bi->tier);
 
     for (int j = i + 1; j < bc->ballsCapacity; j++) {
         Ball *bj = &bc->balls[j];
@@ -69,14 +69,14 @@ static void resolveBallCollisions(BallContainer *bc, Ball *bi, Vector2 *newVel, 
 
         const Vector2 distVec = Vector2Subtract(bj->position, bi->position);
         const float distSq = Vector2LengthSqr(distVec);
-        float radiusSq = biRadius + bj->radius;
+        const float bjRadius = GetBallRadius(bj->tier);
+        float radiusSq = biRadius + bjRadius;
         radiusSq = radiusSq * radiusSq;
 
         if (distSq <= radiusSq) {
             if (bi->tier == bj->tier && bi->tier < MAX_BALL_TIER) {
                 const BallTier newTier = GetNextTier(bj->tier);
                 bj->tier = newTier;
-                bj->radius = GetBallRadius(newTier);
                 bj->position = Vector2Scale(Vector2Add(bi->position, bj->position), 0.5f);
                 bj->velocity = Vector2Scale(Vector2Add(*newVel, bj->velocity), 0.5f);
                 SCORE += (long) pow(2, newTier);
@@ -96,7 +96,7 @@ static void resolveBallCollisions(BallContainer *bc, Ball *bi, Vector2 *newVel, 
                 collisionNormal = Vector2One();
             }
 
-            const float penetration = (biRadius + bj->radius) - dist;
+            const float penetration = biRadius + bjRadius - dist;
 
             // --- POSITION CORRECTION ---
             const float percent = 0.2f; // usually 0.2–0.8
@@ -125,7 +125,7 @@ static void resolveBallCollisions(BallContainer *bc, Ball *bi, Vector2 *newVel, 
 }
 
 static void resolveWallCollisions(Ball *b, const float leftWall, const float rightWall, const float topWall, const float bottomWall, Vector2 *newVel) {
-    const float radius = b->radius;
+    const float radius = GetBallRadius(b->tier);
 
     if (b->position.x - radius < leftWall) {
         b->position.x = leftWall + radius;
@@ -192,7 +192,6 @@ void ResetBall(BallContainer *bc, const int ind) {
     ball->velocity.x = 0;
     ball->velocity.y = 0;
     ball->nextFree = -1;
-    ball->radius = 0.f;
 }
 
 void ResetContainer(BallContainer *bc) {

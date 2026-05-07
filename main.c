@@ -137,9 +137,32 @@ static void DrawFrame(void) {
         drawSprite(spriteSheet, heldBallPosX, (float) (BASE_HEIGHT - BOTTOM_BOUND - 20), sprite);
     }
 
-    for (int i = 0; i < ballContainer->ballsCapacity; i++) {
-        const Ball *b = &ballContainer->balls[i];
-        if (b->tier != None) {
+    const int count = ballContainer->ballsCount;
+    if (count > 0) {
+        DrawCommand commands[count];
+        int j = 0;
+        for (int i = 0; i < ballContainer->ballsCapacity; i++) {
+            const Ball *b = &ballContainer->balls[i];
+            if (b->tier != None) {
+                commands[j].ball = b;
+                commands[j].sortY = (int) (b->position.y + GetBallRadius(b->tier));
+                j++;
+            }
+        }
+        for (int i = 0; i < count; i++) {
+            const DrawCommand key = commands[i];
+            int jj = i - 1;
+
+            while (jj >= 0 && commands[jj].sortY > key.sortY) {
+                commands[jj + 1] = commands[jj];
+                jj--;
+            }
+
+            commands[jj + 1] = key;
+        }
+        for (int i = 0; i < count; i++) {
+            const Ball *b = commands[i].ball;
+
             // DrawCircle((int) roundf(b->position.x), (int) roundf(b->position.y), CalcBallRadius(b->tier), BALL_COLORS[b->tier - 1]);
             const Sprite *sprite = &BALL_SPRITES[b->tier - 1];
             drawSprite(spriteSheet, b->position.x, b->position.y, sprite);
@@ -147,11 +170,23 @@ static void DrawFrame(void) {
     }
 
     // DrawFPS(10, 10);
-    // DrawText(TextFormat("%2i balls", ballContainer->ballsCount), 10, 25, 20, BLACK);
-    DrawText(TextFormat("Score: %2i", SCORE), BASE_WIDTH - 150, 10, 20, BLACK);
+    const int fontSize = 20;
+    const char *scoreText = TextFormat("Score: %2i", SCORE);
+    DrawText(scoreText, 10, 10, fontSize, BLACK);
+    const char *btext = TextFormat("%2i balls", ballContainer->ballsCount);
+    const int textWidth = MeasureText(btext, fontSize);
+    DrawText(btext, (int) GetRightWallBound() - textWidth, 10, fontSize, BLACK);
 
     if (gameOver) {
-        DrawText("Game over!", 100, 380, 40,BLACK);
+        const char *text = "Game over!";
+        const int width = MeasureText(text, 40);
+        const int posX = (BASE_WIDTH / 2) - (width / 2);
+        const int posY = (BASE_HEIGHT / 2) - 20;
+        const int margin = 10;
+        const Rectangle goRect = (Rectangle){(float) (posX - margin), (float) (posY - margin), (float) (width + margin * 2), (float) (40 + margin * 2)};
+        DrawRectangleRounded(goRect, 0.2f, 100, GRAY);
+        DrawRectangleRoundedLinesEx(goRect, 0.2f, 100, 2.f, BLACK);
+        DrawText(text, posX, posY, 40, BLACK);
     }
 }
 
@@ -159,7 +194,6 @@ static void SpawnBall(const float xPos) {
     const int ind = AddBall(ballContainer);
     Ball *b = &ballContainer->balls[ind];
     b->tier = heldBallTier;
-    b->radius = GetBallRadius(heldBallTier);
     b->position.x = xPos;
     b->position.y = (float) (BASE_HEIGHT - BOTTOM_BOUND - 20);
     b->velocity.y = BALL_INITIAL_SPEED;
@@ -170,9 +204,9 @@ static void SpawnBall(const float xPos) {
 }
 
 static BallTier GetNextBall() {
-    const int rVal = GetRandomValue(0, 9);
-    if (rVal <= 5) return T1;
-    if (rVal <= 8) return T2;
+    const int rVal = GetRandomValue(0, 99);
+    if (rVal <= 60) return T1;
+    if (rVal <= 94) return T2;
     return T3;
 }
 

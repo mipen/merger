@@ -20,7 +20,6 @@ typedef struct {
     Vector2 position;
     Vector2 velocity;
     BallTier tier;
-    float radius;
     short nextFree;
 } Ball;
 
@@ -40,7 +39,7 @@ typedef struct {
 } Sprite;
 
 typedef struct {
-    Ball *ball;
+    const Ball *ball;
     int sortY;
 } DrawCommand;
 
