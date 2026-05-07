@@ -99,7 +99,7 @@ static void resolveBallCollisions(BallContainer *bc, Ball *bi, Vector2 *newVel, 
             const float penetration = biRadius + bjRadius - dist;
 
             // --- POSITION CORRECTION ---
-            const float percent = 0.2f; // usually 0.2–0.8
+            const float percent = 0.8f; // usually 0.2–0.8
             const float slop = 0.01f; // small tolerance
             const float mi_inv = 1.f / CalcBallMass(bi->tier);
             const float mj_inv = 1.f / CalcBallMass(bj->tier);
@@ -107,16 +107,27 @@ static void resolveBallCollisions(BallContainer *bc, Ball *bi, Vector2 *newVel, 
             const float correctionMag = fmaxf(penetration - slop, 0.0f) / (mi_inv + mj_inv);
             const Vector2 correction = Vector2Scale(collisionNormal, correctionMag * percent);
 
-            bj->position = Vector2Add(bj->position, Vector2Scale(correction, mj_inv));
-            bi->position = Vector2Subtract(bi->position, Vector2Scale(correction, mi_inv));
+            const Vector2 iCorrection = Vector2Scale(correction, mi_inv);
+            const Vector2 jCorrection = Vector2Scale(correction, mj_inv);
+
+            bj->position = Vector2Add(bj->position, jCorrection);
+            bi->position = Vector2Subtract(bi->position, iCorrection);
+
+            bj->velocity = Vector2Add(bj->velocity, jCorrection);
+            bi->velocity = Vector2Subtract(bi->velocity, iCorrection);
 
             const Vector2 relativeVelocity = Vector2Subtract(bj->velocity, *newVel);
             const float velAlongNormal = Vector2DotProduct(relativeVelocity, collisionNormal);
 
             if (velAlongNormal < 0.f) {
-                float impulseForce = -(1 + BALL_RESTITUTION) * velAlongNormal;
+                float restitution = BALL_RESTITUTION;
+                if (fabsf(velAlongNormal) < RESTING_THRESHOLD)
+                    restitution = 0.f;
+
+                float impulseForce = -(1 + restitution) * velAlongNormal;
                 impulseForce /= mi_inv + mj_inv;
                 const Vector2 impulse = Vector2Scale(collisionNormal, impulseForce);
+
                 *newVel = Vector2Subtract(*newVel, Vector2Scale(impulse, mi_inv));
                 bj->velocity = Vector2Add(bj->velocity, Vector2Scale(impulse, mj_inv));
             }
@@ -211,7 +222,7 @@ float GetBallRadius(const int tier) {
 }
 
 float CalcBallMass(const int tier) {
-    return 10.f + (float) (tier * tier * tier * tier);
+    return 1000.f + (float) pow(tier, 6);
 }
 
 float GetLeftWallBound() {

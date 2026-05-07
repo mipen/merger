@@ -15,6 +15,7 @@ extern const BallTier MAX_BALL_TIER;
 
 //Physics
 extern const float BALL_RESTITUTION;
+extern const float RESTING_THRESHOLD;
 extern const float SIDE_WALL_RESTITUTION;
 extern const float TOP_WALL_RESTITUTION;
 extern const float FRICTION;
